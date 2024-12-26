@@ -1,24 +1,36 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-receiver',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './receiver.component.html',
   styleUrl: './receiver.component.scss'
 })
 export class ReceiverComponent {
-  title: string = 'Audio Player with Transcription';
-  audioSource: string = 'assets/sample-audio.mp3'; // Path to your audio file
-  isAudioPlaying: boolean = true;
-  transcription: string = 'This is the transcription of the audio content.';
+  title: string = 'Audio Dashboard with Transcription';
+  transcription: string =
+    'This is the transcription of the conversation. It can span multiple lines based on the content.';
+  cards = [
+    { name: 'John Doe', type: 'Speaker' },
+    { name: 'Jane Smith', type: 'Receiver' },
+    { name: 'Alice Johnson', type: 'Speaker' },
+    { name: 'Bob Brown', type: 'Receiver' }
+  ];
 
-  toggleAudio(audioPlayer: HTMLAudioElement): void {
-    if (this.isAudioPlaying) {
-      audioPlayer.pause();
+  selectedCard: any = null; // Store details of the selected card
+
+  handleAudio(type: string): void {
+    if (type === 'Speaker') {
+      console.log('Toggle microphone functionality.');
     } else {
-      audioPlayer.play();
+      console.log('Toggle sound functionality.');
     }
-    this.isAudioPlaying = !this.isAudioPlaying;
+  }
+
+  displayCardDetails(card: any): void {
+    this.selectedCard = card;
+    console.log('Selected card:', card);
   }
 }
