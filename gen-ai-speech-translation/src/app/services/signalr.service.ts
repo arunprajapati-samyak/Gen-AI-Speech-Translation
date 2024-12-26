@@ -1,13 +1,23 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SignalRService {
     private hubConnection: signalR.HubConnection | undefined;
-    public loggedInUsers: string[] = [];
-    public messages: { time: string; user: string; message: string }[] = [];
+    // public loggedInUsers: string[] = [];
+    // public messages: { time: string; user: string; message: string }[] = [];
+
+    // Subjects to track messages and logged-in users
+    private messagesSubject = new BehaviorSubject<{ time: string; user: string; message: string }[]>([]);
+    private usersSubject = new BehaviorSubject<string[]>([]);
+
+
+    // Observable streams for components to subscribe
+    public messages$ = this.messagesSubject.asObservable();
+    public users$ = this.usersSubject.asObservable();
 
     constructor() { }
 
@@ -23,7 +33,7 @@ export class SignalRService {
         this.hubConnection
             .start()
             .then(() => console.log('SignalR connected'))
-            .catch((err) => console.error('SignalR connection error:', err));
+            .catch((err: any) => console.error('SignalR connection error:', err));
 
         this.listenForServerEvents();
     }
@@ -31,13 +41,19 @@ export class SignalRService {
     public listenForServerEvents(): void {
         // Listen for new messages
         this.hubConnection?.on('ReceiveMessage', (time: string, user: string, message: string) => {
-            this.messages.push({ time, user, message });
-            console.log(this.messages);
+
+            const currentMessages = this.messagesSubject.getValue();
+            this.messagesSubject.next([...currentMessages, { time, user, message }]);
+
+            // this.messages.push({ time, user, message });
+            // console.log(this.messages);
         });
 
         // Listen for updated user list
         this.hubConnection?.on('UpdateUserList', (users: string[]) => {
-            this.loggedInUsers = users;
+            // this.loggedInUsers = users;
+            this.usersSubject.next(users);
+
         });
 
         // Listen for user login notifications
@@ -56,6 +72,7 @@ export class SignalRService {
     }
 
     public sendMessage(user: string, message: string): void {
+        debugger
         this.hubConnection?.invoke('SendMessage', user, message).catch((err) => console.error(err));
     }
 }
