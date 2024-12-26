@@ -9,8 +9,8 @@
       <!-- Left Section: Transcription -->
       <div class="transcription-section">
 
-            <button mat-fab (click)="showTranscript()" class="center-button">
-              <mat-icon>mic</mat-icon>
+            <button mat-fab (click)="showTranscript();toggleRecognition()" class="center-button">
+                <mat-icon>{{ isRecognizing ? 'mic_off' : 'mic' }}</mat-icon>
             </button>
 
           

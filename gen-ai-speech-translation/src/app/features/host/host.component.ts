@@ -22,7 +22,7 @@ export class HostComponent {
   ];
   public transcriptions: string = '';
   private recognition: any;
-  private isRecognizing: boolean = false;
+  public isRecognizing: boolean = false;
 
   selectedCard: any = null; // Store details of the selected card
 
@@ -40,7 +40,9 @@ export class HostComponent {
   }
 
   async showTranscript() {
+    if (!this.isRecognizing){
     this.setupSpeechRecognition();  // Set up SpeechRecognition
+  }
   }
 
   setupSpeechRecognition() {
@@ -66,11 +68,33 @@ export class HostComponent {
         console.log(command);
       };
 
-      this.recognition.start();
-
       this.recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
       };
     }
   }
+
+  toggleRecognition() {
+    if (this.isRecognizing) {
+      this.stopRecognition();
+    } else {
+      this.startRecognition();
+    }
+  }
+
+  startRecognition() {
+    if (this.recognition) {
+      this.recognition.start();
+      this.isRecognizing = true;  
+    }
+  }
+
+  stopRecognition() {
+    if (this.recognition) {
+      this.recognition.stop();
+      this.isRecognizing = false; 
+    }
+  }
+
+
 }
