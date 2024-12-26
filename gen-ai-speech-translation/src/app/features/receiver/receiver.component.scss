@@ -24,6 +24,8 @@
   /* Transcription Section */
   .transcription-section {
     flex: 2;
+    max-height: 500px; /* Set a max height for scrolling */
+    overflow-y: auto;  /* Enable vertical scrolling */
     background-color: #f8f9fa;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -46,6 +48,8 @@
   .cards-section {
     flex: 1;
     display: flex;
+    max-height: 500px; /* Set a max height for scrolling */
+    overflow-y: auto; 
     flex-direction: column;
     gap: 20px;
     background-color: #ffffff;
