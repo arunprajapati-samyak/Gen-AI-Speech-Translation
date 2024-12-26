@@ -1,17 +1,23 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { GoogleTtsService } from '../google-tts.service';
+import { HttpClientModule } from '@angular/common/http';
 
 declare var window: any;
 
 @Component({
   selector: 'app-receiver',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
+  providers: [GoogleTtsService],
   templateUrl: './receiver.component.html',
   styleUrl: './receiver.component.scss'
 })
 export class ReceiverComponent {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,
+    private googleTtsService: GoogleTtsService) { }
+  textToTranslate: string = '';
+  languageCode: string = 'hi-IN';
   title: string = 'Audio Dashboard with Transcription';
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.';
@@ -25,27 +31,43 @@ export class ReceiverComponent {
     { name: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
     { name: 'Bob Brown', type: 'Receiver', imageState: 'mic' }
   ];
-  textToRead: string = 'A well-organized paragraph supports or develops a single controlling idea, which is expressed in a sentence called the topic sentence. A topic sentence has several important functions: it substantiates or supports an essay’s thesis statement; it unifies the content of a paragraph and directs the order of the sentences; and it advises the reader of the subject to be discussed and how the paragraph will discuss it. Readers generally look to the first few sentences in a paragraph to determine the subject and perspective of the paragraph. That’s why it’s often best to put the topic sentence at the very beginning of the paragraph. In some cases, however, it’s more effective to place another sentence before the topic sentence—for example, a sentence linking the current paragraph to the previous one, or one providing background information.';
+  textToRead: string = 'आसमाँ को ज़मीं ये ज़रूरी नहीं जान ले, जान ले इश्क़ सच्चा वही जिसको मिलती नहीं मंज़िलें, मंज़िलें रंग थे, नूर था, जब क़रीब तू था एक जन्नत सा था ये जहाँवक्त की रेत पे कुछ मेरे नाम सा लिख के छोड़ गया तू कहाँ?';
 
   selectedCard: any = null; // Store details of the selected card
 
   ngOnInit(): void {
-    // Check if the code is running in the browser environment
-      // Call the speakText function when the component is initialized
-      this.speakText();
+    // this.speakText();
+    this.onTranslateAndSpeak()
+  }
+
+  onTranslateAndSpeak() {
+    // Use the Google Text-to-Speech API
+    this.googleTtsService.generateSpeech(this.textToRead, this.languageCode).subscribe(
+      (response: any) => {
+        const audioContent = response.audioContent;
+        this.playAudio(audioContent);
+      },
+      error => {
+        console.error('Error converting text to speech:', error);
+      }
+    );
+  }
+
+  playAudio(audioContent: string) {
+    // Decode the base64 audio content and play it
+    const audio = new Audio('data:audio/mp3;base64,' + audioContent);
+    audio.play();
   }
 
   // Method to convert text to speech
   speakText(): void {
     if (isPlatformBrowser(this.platformId)) {
-      if ('speechSynthesis' in window) {
+      if ('SpeechSynthesis' in window) {
         const synth = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(this.textToRead);
-        utterance.lang = "";
+        utterance.lang = "hi-IN";
         synth.speak(utterance);
       }
-    } else {
-      console.error('Window object is not available in the current platform.');
     }
   }
   handleAudio(type: string): void {

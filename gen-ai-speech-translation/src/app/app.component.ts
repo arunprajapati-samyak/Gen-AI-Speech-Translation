@@ -5,7 +5,7 @@ import { ReceiverComponent } from "./features/receiver/receiver.component";
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ReceiverComponent],
+  imports: [ReceiverComponent,],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
