@@ -1,0 +1,54 @@
+<div class="container">
+    <!-- Top Section: Title -->
+    <div class="top-section">
+      <h1>{{ title }}</h1>
+    </div>
+  
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <!-- Left Section: Transcription -->
+      <div class="transcription-section">
+
+            <button mat-fab (click)="showTranscript()" class="center-button">
+              <mat-icon>mic</mat-icon>
+            </button>
+
+          
+        <h2>Transcription</h2>
+        <p>{{ transcription }}</p>
+      </div>
+  
+      <!-- Right Section: Cards -->
+      <div class="cards-section">
+        <div
+          class="card"
+          *ngFor="let card of cards"
+          (click)="displayCardDetails(card)"
+        >
+          <div class="card-info">
+            <h3>{{ card.name }}</h3>
+            <p>{{ card.type }}</p>
+            <button (click)="handleAudio(card.type); $event.stopPropagation()">
+              <img
+                [src]="card.type === 'Speaker' ? 'assets/Images/open-mic.svg' : 'assets/Images/close-mic.svg'"
+                alt="Audio Control"
+              />
+              <!-- <img src="assets/Images/black-microphone-14637.png" /> -->
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Bottom Section: Card Details -->
+    <div *ngIf="selectedCard" class="card-details">
+      <h2>Selected Card Details</h2>
+      <p><strong>Name:</strong> {{ selectedCard.name }}</p>
+      <p><strong>Type:</strong> {{ selectedCard.type }}</p>
+    </div>
+  </div>
+
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  
