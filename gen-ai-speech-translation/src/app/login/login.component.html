@@ -1,33 +1,38 @@
-<div class="login-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-        <!-- Username Input -->
-        <mat-form-field appearance="fill">
-          <mat-label>Username</mat-label>
-          <input matInput [(ngModel)]="username" name="username" required />
-        </mat-form-field>
+<div style="margin-top: 150px">
+  <mat-card
+    appearance="outlined"
+    class="card transparent-card"
+    style="margin-top: 20px"
+  >
+    <mat-card-content class="card-content" style="height: 40vh">
+      <form [formGroup]="loginMasterForm">
+        <div class="row" style="margin-top: 50px">
+          <!-- Username Field -->
+          <div class="col-2-4">
+            <mat-label class="label" style="padding-right: 30px"
+              >User Name</mat-label
+            >
+            <mat-form-field class="w-100 form-label" appearance="fill">
+              <input matInput formControlName="username" />
+            </mat-form-field>
+          </div>
+          <div class="col-2-4">
+            <mat-label class="label" style="padding-right: 70px"></mat-label>
+            <mat-radio-group value="role" formControlName="role">
+              <mat-radio-button value="Host">Host</mat-radio-button>
+              <mat-radio-button value="Listener">Listener</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
 
-        <!-- Role Dropdown -->
-        <mat-form-field appearance="fill">
-          <mat-label>Role</mat-label>
-          <mat-select [(ngModel)]="role" name="role" required>
-            <mat-option value="speaker">Speaker</mat-option>
-            <mat-option value="host">Host</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Login Button -->
+        <!-- Submit Button -->
         <button
-          mat-raised-button
-          color="primary"
+          style="margin-top: 30px"
           type="submit"
-          [disabled]="!loginForm.form.valid"
+          class="submit-btn"
+          (click)="onSubmit()"
         >
-          Login
+          Join
         </button>
       </form>
     </mat-card-content>

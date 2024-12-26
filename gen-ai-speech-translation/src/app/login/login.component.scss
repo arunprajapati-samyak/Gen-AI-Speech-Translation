@@ -1,17 +1,82 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f7f7f7;
+/* General Card Styles */
+.card {
+  max-width: 500px;
+  margin: 50px auto;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(68, 42, 42, 0.1);
+}
+.transparent-card {
+  background-color: transparent;
 }
 
-mat-card {
-  width: 400px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+.card-content {
+  padding: 30px;
 }
 
-button {
+/* Form Field Styling */
+.mat-form-field {
   width: 100%;
+  margin-bottom: 20px;
+}
+
+.mat-label {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 8px; /* Added space between label and input */
+}
+
+.mat-input-element {
+  font-size: 14px;
+  padding: 12px;
+}
+
+.mat-select {
+  font-size: 14px;
+}
+
+.mat-error {
+  color: #f44336;
+}
+
+/* Row Layout (No Flex for Vertical Stack) */
+.row {
+  display: block;
+}
+
+.col-2-4 {
+  width: 100%; /* Make each input take up the full width */
+  margin-bottom: 15px; /* Space between inputs */
+}
+
+/* Asterisk Styling */
+.asterick {
+  color: #f44336;
+}
+
+/* Submit Button */
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.submit-btn:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
+
+/* Input Styling for Focus */
+.mat-input-element:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
