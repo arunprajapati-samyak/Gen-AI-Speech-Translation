@@ -23,6 +23,8 @@ export class HostComponent {
   public transcriptions: string = '';
   private recognition: any;
   public isRecognizing: boolean = false;
+  public fulltranscription: string = '';
+  
 
   selectedCard: any = null; // Store details of the selected card
 
@@ -60,12 +62,17 @@ export class HostComponent {
         var last = event.results.length - 1;
         var command = event.results[last][0].transcript;
 
-
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            this.fulltranscription += event.results[i][0].transcript;
+          }
+        }
         this.ngZone.run(() => {
           this.transcription = command;  // Set the transcription
         });
 
         console.log(command);
+        console.log(event);
       };
 
       this.recognition.onerror = (event: any) => {
