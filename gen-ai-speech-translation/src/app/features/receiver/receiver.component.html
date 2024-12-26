@@ -1,0 +1,20 @@
+<div class="container">
+    <!-- Top Section: Title -->
+    <div class="top-section">
+      <h1>{{ title }}</h1>
+    </div>
+  
+    <!-- Second Section: Audio Player -->
+    <div class="audio-section">
+      <audio #audioPlayer controls [src]="audioSource"></audio>
+      <button (click)="toggleAudio(audioPlayer)">
+        {{ isAudioPlaying ? 'Sound Off' : 'Sound On' }}
+      </button>
+    </div>
+  
+    <!-- Last Section: Transcription -->
+    <div class="transcription-section">
+      <h2>Transcription</h2>
+      <p>{{ transcription }}</p>
+    </div>
+  </div>
