@@ -1,17 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, NgZone } from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-host',
   standalone: true,
-  imports: [MatButtonModule,MatIconModule],
+  imports: [MatButtonModule, MatIconModule, CommonModule],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
 export class HostComponent {
   title: string = 'Audio Dashboard with Transcription';
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) { }
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content.';
   cards = [
@@ -24,7 +25,7 @@ export class HostComponent {
   private recognition: any;
   public isRecognizing: boolean = false;
   public fulltranscription: string = '';
-  
+
 
   selectedCard: any = null; // Store details of the selected card
 
@@ -42,14 +43,14 @@ export class HostComponent {
   }
 
   async showTranscript() {
-    if (!this.isRecognizing){
-    this.setupSpeechRecognition();  // Set up SpeechRecognition
-  }
+    if (!this.isRecognizing) {
+      this.setupSpeechRecognition();  // Set up SpeechRecognition
+    }
   }
 
   setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
+
     if (!SpeechRecognition) {
       console.error('SpeechRecognition is not supported in this browser.');
     } else {
@@ -92,14 +93,14 @@ export class HostComponent {
   startRecognition() {
     if (this.recognition) {
       this.recognition.start();
-      this.isRecognizing = true;  
+      this.isRecognizing = true;
     }
   }
 
   stopRecognition() {
     if (this.recognition) {
       this.recognition.stop();
-      this.isRecognizing = false; 
+      this.isRecognizing = false;
     }
   }
 

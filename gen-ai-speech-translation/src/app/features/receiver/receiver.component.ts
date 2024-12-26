@@ -11,7 +11,7 @@ declare var window: any;
   styleUrl: './receiver.component.scss'
 })
 export class ReceiverComponent {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
   title: string = 'Audio Dashboard with Transcription';
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.';
@@ -31,8 +31,8 @@ export class ReceiverComponent {
 
   ngOnInit(): void {
     // Check if the code is running in the browser environment
-      // Call the speakText function when the component is initialized
-      this.speakText();
+    // Call the speakText function when the component is initialized
+    this.speakText();
   }
 
   // Method to convert text to speech
@@ -41,7 +41,7 @@ export class ReceiverComponent {
       if ('speechSynthesis' in window) {
         const synth = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(this.textToRead);
-        utterance.lang = "";
+        utterance.lang = "en-US";
         synth.speak(utterance);
       }
     } else {
