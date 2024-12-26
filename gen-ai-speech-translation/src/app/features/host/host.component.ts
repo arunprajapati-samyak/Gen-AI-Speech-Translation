@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { SignalRService } from '../../services/signalr.service';
+import { SignalRService } from '../../services/signa-r.service'
 
 @Component({
   selector: 'app-host',
