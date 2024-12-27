@@ -9,10 +9,10 @@ export class ApiintegrateService {
 
   constructor(private http: HttpClient) { }
 
-  private apiUrl = 'http://10.100.111.43:8585/translate';  
+  private apiUrl = 'http://10.100.111.43:8585/summary';  
 
 
-  translateText(text: string): Observable<any> {
+  getSummary(text: string): Observable<any> {
     const requestBody = { text };
     return this.http.post<any>(this.apiUrl, requestBody);
   }
