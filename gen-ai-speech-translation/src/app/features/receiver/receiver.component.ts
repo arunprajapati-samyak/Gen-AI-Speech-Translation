@@ -73,7 +73,7 @@ export class ReceiverComponent implements OnInit, OnDestroy {
 
   // }
 
-  synth = window.speechSynthesis;
+  synth = window?.speechSynthesis;
 
 
   // Method to convert text to speech
@@ -177,7 +177,9 @@ export class ReceiverComponent implements OnInit, OnDestroy {
 
   logout() {
     sessionStorage.clear()
-    this.router.navigate([""])
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([""]);
+    });
   }
 
   ngOnDestroy(): void {
