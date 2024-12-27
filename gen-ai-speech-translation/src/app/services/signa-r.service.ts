@@ -11,7 +11,7 @@ export class SignalRService {
     // public messages: { time: string; user: string; message: string }[] = [];
 
     // Subjects to track messages and logged-in users
-    private messagesSubject = new BehaviorSubject<{ time: string; user: string; message: string }[]>([]);
+    private messagesSubject = new BehaviorSubject<{ user: string; message: string }[]>([]);
     private usersSubject = new BehaviorSubject<string[]>([]);
 
 
@@ -40,10 +40,10 @@ export class SignalRService {
 
     public listenForServerEvents(): void {
         // Listen for new messages
-        this.hubConnection?.on('ReceiveMessage', (time: string, user: string, message: string) => {
+        this.hubConnection?.on('ReceiveMessage', (user: string, message: string) => {
 
             const currentMessages = this.messagesSubject.getValue();
-            this.messagesSubject.next([...currentMessages, { time, user, message }]);
+            this.messagesSubject.next([...currentMessages, { user, message }]);
 
             // this.messages.push({ time, user, message });
             // console.log(this.messages);
