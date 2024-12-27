@@ -46,7 +46,7 @@ export class ReceiverComponent implements OnInit {
     // Check if the code is running in the browser environment
     // Call the speakText function when the component is initialized
     // Subscribe to messages
-    this.signalRService.startConnection();
+    //this.signalRService.startConnection();
 
     this.signalRService.messages$.subscribe((messages) => {
       this.messages = messages;

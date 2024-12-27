@@ -45,7 +45,8 @@ export class LoginComponent {
       const userName = this.loginForm.get('userName')?.value;
 
       if (userName) {
-        this.signalRService.login(userName);
+        this.signalRService.startConnection(userName);
+        //this.signalRService.login(userName);
         // this.loggedInUsers = this.signalRService.loggedInUsers;
       }
       if (userType === 'Host') {
