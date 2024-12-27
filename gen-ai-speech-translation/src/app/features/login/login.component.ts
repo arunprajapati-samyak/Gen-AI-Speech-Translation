@@ -43,9 +43,10 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const userType = this.loginForm.get('userType')?.value;
       const userName = this.loginForm.get('userName')?.value;
+      const userLang = this.loginForm.get('lang')?.value;
 
       if (userName) {
-        this.signalRService.startConnection(userName);
+        this.signalRService.startConnection(userName, userType, userLang);
         //this.signalRService.login(userName);
         // this.loggedInUsers = this.signalRService.loggedInUsers;
       }
