@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -40,9 +40,8 @@ export class SignalRService {
 
     public listenForServerEvents(): void {
         // Listen for new messages
-        this.hubConnection?.on('ReceiveMessage', (user: string, message: string) => {
-
-            const currentMessages = this.messagesSubject.getValue();
+        this.hubConnection?.on('ReceiveMessage', async (user: string, message: string) => {
+            const currentMessages = await firstValueFrom(this.messages$);
             this.messagesSubject.next([...currentMessages, { user, message }]);
 
             // this.messages.push({ time, user, message });

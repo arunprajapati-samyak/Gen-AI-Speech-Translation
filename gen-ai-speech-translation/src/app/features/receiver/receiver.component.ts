@@ -50,7 +50,7 @@ export class ReceiverComponent implements OnInit {
     this.signalRService.users$.subscribe((users) => {
       this.loggedInUsers = users;
     });
-    //this.speakText();
+    // this.speakText();
   }
 
   // Method to convert text to speech
