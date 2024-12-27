@@ -28,6 +28,7 @@ export class SignalRService {
                 skipNegotiation: true, // Required when forcing WebSockets
             })
             .configureLogging(signalR.LogLevel.Information) // Enable detailed logging
+            .withAutomaticReconnect([500, 1000, 2500, 5000])
             .build();
 
         this.hubConnection
