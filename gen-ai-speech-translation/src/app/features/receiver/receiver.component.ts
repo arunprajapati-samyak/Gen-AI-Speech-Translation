@@ -24,8 +24,7 @@ export class ReceiverComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private signalRService: SignalRService) { }
   title: string = 'Audio Dashboard with Transcription';
-  transcription: string =
-    'This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.';
+  transcription: string = '';
   cards = [
     { userName: 'John Doe', type: 'Speaker', imageState: 'mic' },
     { userName: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
@@ -50,7 +49,8 @@ export class ReceiverComponent implements OnInit {
 
     this.signalRService.messages$.subscribe((messages) => {
       this.messages = messages;
-      console.log(this.messages);
+      if (this.messages.length > 0)
+        this.speakText(this.messages[0]);
     });
 
     // Subscribe to logged-in users
@@ -64,52 +64,52 @@ export class ReceiverComponent implements OnInit {
       this.loggedInUsers = users;
       console.log(this.loggedInUsers)
     });
-    // this.speakText();
   }
 
   // OnClick(): void {
   //   console.log("speaking");
-    
+
   //   this.speakText()
   //   console.log("again speaking");
-    
+
   // }
 
   // Method to convert text to speech
-  speakText(): void {
+  speakText(msg: any): void {
     if (isPlatformBrowser(this.platformId)) {
       if ('speechSynthesis' in window) {
         const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(this.textToRead);
+        this.transcription = msg.message;
+        const utterance = new SpeechSynthesisUtterance(msg.message);
         utterance.lang = "en-US";
         synth.speak(utterance);
       }
     } else {
       console.error('Window object is not available in the current platform.');
       const synth = window.speechSynthesis;
-  
+
       const speakChunks = (text: string, voices: SpeechSynthesisVoice[]) => {
         const chunkSize = 150; // Character limit per chunk
         const chunks = text.match(new RegExp(`.{1,${chunkSize}}(\\s|$)`, 'g')) || [text];
-        
+
         // Try to find a Gujarati voice, or fallback to Indian English
         // const gujaratiVoice = voices.find(voice => voice.lang === "gu-IN");
         // const fallbackVoice = voices.find(voice => voice.lang === "en-IN") || voices[0];
-  
+
         let currentChunkIndex = 0;
-  
+
         const speakNextChunk = () => {
           if (currentChunkIndex < chunks.length) {
             const utterance = new SpeechSynthesisUtterance(chunks[currentChunkIndex].trim());
             utterance.lang = "hi-IN";
             //utterance.voice = gujaratiVoice || fallbackVoice;
-  
+
             // On chunk end, move to the next chunk immediately
             utterance.onend = () => {
               currentChunkIndex++;
               speakNextChunk(); // Speak the next chunk without additional delay
             };
-  
+
             utterance.onerror = (error) => {
               console.error("Error speaking chunk:", error);
               currentChunkIndex++;
@@ -119,10 +119,10 @@ export class ReceiverComponent implements OnInit {
             synth.speak(utterance);
           }
         };
-  
+
         speakNextChunk(); // Start speaking chunks
       };
-  
+
       const initializeVoices = () => {
         const voices = synth.getVoices();
         if (voices.length > 0) {
@@ -135,7 +135,7 @@ export class ReceiverComponent implements OnInit {
           };
         }
       };
-  
+
       if (synth.getVoices().length > 0) {
         initializeVoices();
       } else {
