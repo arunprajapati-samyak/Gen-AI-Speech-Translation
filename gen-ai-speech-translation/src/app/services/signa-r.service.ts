@@ -12,7 +12,7 @@ export class SignalRService {
 
     // Subjects to track messages and logged-in users
     private messagesSubject = new BehaviorSubject<{ user: string; message: string }[]>([]);
-    private usersSubject = new BehaviorSubject<string[]>([]);
+    private usersSubject = new BehaviorSubject<{userName : string, type: string, lang:string}[]>([]);
 
 
     // Observable streams for components to subscribe
@@ -27,7 +27,7 @@ export class SignalRService {
             return;
         } else {
             this.hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl('http://10.100.111.106:7096/signalRConnection', {
+                .withUrl('http://10.100.111.1:7096/signalRConnection', {
                     transport: signalR.HttpTransportType.WebSockets, // Force WebSockets for testing
                     skipNegotiation: true, // Required when forcing WebSockets
                 })
@@ -58,14 +58,14 @@ export class SignalRService {
         });
 
         // Listen for updated user list
-        this.hubConnection?.on('UpdateUserList', (users: string[]) => {
+        this.hubConnection?.on('UpdateUserList', (users: {userName : string, type: string, lang:string}[]) => {
             // this.loggedInUsers = users;
             this.usersSubject.next(users);
 
         });
 
         // Listen for user login notifications
-        this.hubConnection?.on('UserLoggedIn', (username: string) => {
+        this.hubConnection?.on('UserLoggedIn', (username: any) => {
             console.log(`${username} logged in`);
         });
 

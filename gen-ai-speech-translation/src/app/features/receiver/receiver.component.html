@@ -20,7 +20,7 @@
           (click)="displayCardDetails(card)"
         >
           <div class="card-info">
-            <h3>{{ card.name }}</h3>
+            <h3>{{ card.userName }}</h3>
             <p>{{ card.type }}</p>
             <button (click)="handleAudio(card.type); $event.stopPropagation()">
                 <img

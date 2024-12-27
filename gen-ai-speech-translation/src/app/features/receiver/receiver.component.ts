@@ -18,7 +18,7 @@ declare var window: any;
 })
 export class ReceiverComponent implements OnInit {
   messages: { user: string; message: string }[] = [];
-  loggedInUsers: string[] = [];
+  loggedInUsers: {userName : string, type: string, lang:string}[] = [];
   username: string = '';
   message: string = '';
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
@@ -27,14 +27,14 @@ export class ReceiverComponent implements OnInit {
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.';
   cards = [
-    { name: 'John Doe', type: 'Speaker', imageState: 'mic' },
-    { name: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
-    { name: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
-    { name: 'Bob Brown', type: 'Receiver', imageState: 'mic' },
-    { name: 'John Doe', type: 'Speaker', imageState: 'mic' },
-    { name: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
-    { name: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
-    { name: 'Bob Brown', type: 'Receiver', imageState: 'mic' }
+    { userName: 'John Doe', type: 'Speaker', imageState: 'mic' },
+    { userName: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
+    { userName: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
+    { userName: 'Bob Brown', type: 'Receiver', imageState: 'mic' },
+    { userName: 'John Doe', type: 'Speaker', imageState: 'mic' },
+    { userName: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
+    { userName: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
+    { userName: 'Bob Brown', type: 'Receiver', imageState: 'mic' }
   ];
   textToRead: string = 'मेरा भारत महान, विश्व का एक अद्वितीय देश है। यह भूमि संस्कृति, ऐतिहासिकता और विविधता से समृद्ध है। यहां अनेक धर्म, भाषाएं और जातियाँ एकत्रित होती हैं। मेरे देश में अद्वितीय स्वतंत्रता संग्राम की कहानी है। मेरा भारत महान, गर्व का स्रोत है और सबके लिए समर्पित है।';
 
@@ -55,6 +55,12 @@ export class ReceiverComponent implements OnInit {
 
     // Subscribe to logged-in users
     this.signalRService.users$.subscribe((users) => {
+      users.map((res : any) => {
+        return {
+          ...res,
+          imageState: 'mic' 
+        }
+      })
       this.loggedInUsers = users;
       console.log(this.loggedInUsers)
     });
