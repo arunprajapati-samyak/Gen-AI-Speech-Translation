@@ -21,27 +21,35 @@
                                         <label class="form-label" for="form2Example11">Username</label>
                                         <input type="email" id="form2Example11" class="form-control"
                                             formControlName="userName" placeholder="Enter User Name" />
-                                        <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+                                        <div *ngIf="loginForm.get('userName')?.invalid && loginForm.get('userName')?.touched"
                                             class="text-danger">
-                                            <small *ngIf="loginForm.get('username')?.hasError('required')">Username is
-                                                required.</small>
-                                            <small *ngIf="loginForm.get('username')?.hasError('email')">Enter a valid
-                                                email address.</small>
+                                            <small>Username is required.</small>
                                         </div>
                                     </div>
 
-                                    <!-- Password Field -->
-                                    <div data-mdb-input-init class="form-outline mb-4">
-                                        <label class="form-label" for="form2Example22">Password</label>
-                                        <input type="password" id="form2Example22" class="form-control"
-                                            formControlName="userType" />
-                                        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-                                            class="text-danger">
-                                            <small *ngIf="loginForm.get('password')?.hasError('required')">Password is
-                                                required.</small>
-                                            <small *ngIf="loginForm.get('password')?.hasError('minlength')">
-                                                Password must be at least 6 characters.
-                                            </small>
+                                    <div class="mb-4">
+                                        <label class="form-label">User Type</label>
+                                        <div>
+                                            <label class="me-3">
+                                                <input type="radio" formControlName="userType" value="Host" (change)="onUserTypeChange('Host')"> Host
+                                            </label>
+                                            <label>
+                                                <input type="radio" formControlName="userType" value="Receiver" (change)="onUserTypeChange('Receiver')"> Receiver
+                                            </label>
+                                        </div>
+                                        <div *ngIf="loginForm.get('userType')?.invalid && loginForm.get('userType')?.touched" class="text-danger">
+                                            <small>User type is required.</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4" *ngIf="showLanguageDropdown">
+                                        <label class="form-label" for="languageSelect">Preferred Language</label>
+                                        <select id="languageSelect" class="form-control" formControlName="lang">
+                                            <option value="" disabled>Select Language</option>
+                                            <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+                                        </select>
+                                        <div *ngIf="loginForm.get('lang')?.invalid && loginForm.get('lang')?.touched" class="text-danger">
+                                            <small>Language is required for receiver.</small>
                                         </div>
                                     </div>
 
@@ -49,20 +57,14 @@
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button data-mdb-button-init data-mdb-ripple-init
                                             class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit"
-                                            [disabled]="loginForm.invalid">
-                                            Log in
+                                            [disabled]="loginForm.invalid" (click)="onLogin()">
+                                            Login
                                         </button>
-                                        <a class="text-muted" href="#!">Forgot password?</a>
+
                                     </div>
 
                                     <!-- Create New Account -->
-                                    <div class="d-flex align-items-center justify-content-center pb-4">
-                                        <p class="mb-0 me-2">Don't have an account?</p>
-                                        <button type="button" data-mdb-button-init data-mdb-ripple-init
-                                            class="btn btn-outline-danger">
-                                            Create new
-                                        </button>
-                                    </div>
+                                
                                 </form>
 
 

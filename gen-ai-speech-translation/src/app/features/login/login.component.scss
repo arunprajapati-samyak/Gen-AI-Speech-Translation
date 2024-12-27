@@ -26,3 +26,13 @@
     border-bottom-right-radius: 0.3rem;
   }
 }
+
+select.form-control {
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    background-image: none; /* Remove custom styles, if any */
+    background-color: white;
+    border: 1px solid #ccc; /* Ensure border is visible */
+    padding-right: 50px; /* Space for the arrow */
+}
