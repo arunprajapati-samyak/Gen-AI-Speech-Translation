@@ -62,15 +62,14 @@ export class ReceiverComponent implements OnInit {
 
   // OnClick(): void {
   //   console.log("speaking");
-    
+
   //   this.speakText()
   //   console.log("again speaking");
-    
+
   // }
 
   // Method to convert text to speech
   speakText(msg: any): void {
-    debugger
     if (isPlatformBrowser(this.platformId)) {
       if ('speechSynthesis' in window) {
         const synth = window.speechSynthesis;
@@ -82,29 +81,29 @@ export class ReceiverComponent implements OnInit {
     } else {
       console.error('Window object is not available in the current platform.');
       const synth = window.speechSynthesis;
-  
+
       const speakChunks = (text: string, voices: SpeechSynthesisVoice[]) => {
         const chunkSize = 150; // Character limit per chunk
         const chunks = text.match(new RegExp(`.{1,${chunkSize}}(\\s|$)`, 'g')) || [text];
-        
+
         // Try to find a Gujarati voice, or fallback to Indian English
         // const gujaratiVoice = voices.find(voice => voice.lang === "gu-IN");
         // const fallbackVoice = voices.find(voice => voice.lang === "en-IN") || voices[0];
-  
+
         let currentChunkIndex = 0;
-  
+
         const speakNextChunk = () => {
           if (currentChunkIndex < chunks.length) {
             const utterance = new SpeechSynthesisUtterance(chunks[currentChunkIndex].trim());
             utterance.lang = "hi-IN";
             //utterance.voice = gujaratiVoice || fallbackVoice;
-  
+
             // On chunk end, move to the next chunk immediately
             utterance.onend = () => {
               currentChunkIndex++;
               speakNextChunk(); // Speak the next chunk without additional delay
             };
-  
+
             utterance.onerror = (error) => {
               console.error("Error speaking chunk:", error);
               currentChunkIndex++;
@@ -114,10 +113,10 @@ export class ReceiverComponent implements OnInit {
             synth.speak(utterance);
           }
         };
-  
+
         speakNextChunk(); // Start speaking chunks
       };
-  
+
       const initializeVoices = () => {
         const voices = synth.getVoices();
         if (voices.length > 0) {
@@ -130,7 +129,7 @@ export class ReceiverComponent implements OnInit {
           };
         }
       };
-  
+
       if (synth.getVoices().length > 0) {
         initializeVoices();
       } else {

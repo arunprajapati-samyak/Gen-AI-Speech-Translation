@@ -12,7 +12,7 @@ export class SignalRService {
 
     // Subjects to track messages and logged-in users
     private messagesSubject = new BehaviorSubject<{ user: string; message: string }[]>([]);
-    private usersSubject = new BehaviorSubject<string[]>([]);
+    private usersSubject = new BehaviorSubject<any[]>([]);
 
 
     // Observable streams for components to subscribe
@@ -21,13 +21,13 @@ export class SignalRService {
 
     constructor() { }
 
-    public startConnection(userName:any): void {
+    public startConnection(userName: any): void {
         if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
             console.log('SignalR connection already established');
             return;
         } else {
             this.hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl('http://10.100.111.106:7096/signalRConnection', {
+                .withUrl('http://10.100.111.1:7096/signalRConnection', {
                     transport: signalR.HttpTransportType.WebSockets, // Force WebSockets for testing
                     skipNegotiation: true, // Required when forcing WebSockets
                 })
@@ -37,9 +37,10 @@ export class SignalRService {
 
             this.hubConnection
                 .start()
-                .then(() => {console.log('SignalR connected');
+                .then(() => {
+                    console.log('SignalR connected');
                     this.login(userName);
-            }
+                }
                 )
                 .catch((err: any) => console.error('SignalR connection error:', err));
 
@@ -49,7 +50,8 @@ export class SignalRService {
 
     public listenForServerEvents(): void {
         // Listen for new messages
-        this.hubConnection?.on('ReceiveMessage', async (user: string, message: string) => {
+        this.hubConnection?.on('ReceiveMessage', async (date: string, user: string, message: string) => {
+            debugger
             const currentMessages = await firstValueFrom(this.messages$);
             this.messagesSubject.next([...currentMessages, { user, message }]);
 
@@ -58,10 +60,10 @@ export class SignalRService {
         });
 
         // Listen for updated user list
-        this.hubConnection?.on('UpdateUserList', (users: string[]) => {
+        this.hubConnection?.on('UpdateUserList', (users: any) => {
             // this.loggedInUsers = users;
+            console.log(users)
             this.usersSubject.next(users);
-
         });
 
         // Listen for user login notifications
