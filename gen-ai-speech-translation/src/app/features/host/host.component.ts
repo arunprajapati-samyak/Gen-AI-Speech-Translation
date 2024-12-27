@@ -143,9 +143,11 @@ export class HostComponent implements OnInit {
 
   logout() {
     sessionStorage.clear()
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate([""]);
-    });
+    sessionStorage.setItem("SummaryData", this.transcription);
+    this.router.navigateByUrl('/summary');
+    // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    //   this.router.navigate([""]);
+    // });
   }
 
   stopRecognition() {
