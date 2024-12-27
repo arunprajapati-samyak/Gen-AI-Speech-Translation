@@ -62,7 +62,6 @@ export class ReceiverComponent implements OnInit, OnDestroy {
       // this.loggedInUsers = users;
       // console.log(this.loggedInUsers)
       this.cards = users;
-      console.log("cards", this.cards)
     });
   }
 
@@ -82,7 +81,6 @@ export class ReceiverComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       if ('speechSynthesis' in window) {
         this.translateService.translateText(String(msg.message), String(sessionStorage.getItem("lang"))).subscribe((response: any) => {
-          console.log("response translate : ", response[0].translations[0].text)
           const utterance = new SpeechSynthesisUtterance(response[0].translations[0].text);
           utterance.lang = String(sessionStorage.getItem("lang"));
           this.transcription = this.transcription.trim() + " " + response[0].translations[0].text.trim();
@@ -163,9 +161,7 @@ export class ReceiverComponent implements OnInit, OnDestroy {
 
   handleAudio(type: string): void {
     if (type === 'Speaker') {
-      console.log('Toggle microphone functionality.');
     } else {
-      console.log('Toggle sound functionality.');
     }
   }
 
@@ -176,7 +172,6 @@ export class ReceiverComponent implements OnInit, OnDestroy {
 
   displayCardDetails(card: any): void {
     this.selectedCard = card;
-    console.log('Selected card:', card);
   }
 
   logout() {

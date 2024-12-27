@@ -32,7 +32,6 @@ export class HostComponent implements OnInit {
       // this.loggedInUsers = users;
       // console.log(this.loggedInUsers)
       this.cards = users;
-      console.log("cards", this.cards)
     });
   }
   // transcription: string =
@@ -48,15 +47,12 @@ export class HostComponent implements OnInit {
 
   handleAudio(type: string): void {
     if (type === 'Speaker') {
-      console.log('Toggle microphone functionality.');
     } else {
-      console.log('Toggle sound functionality.');
     }
   }
 
   displayCardDetails(card: any): void {
     this.selectedCard = card;
-    console.log('Selected card:', card);
   }
 
   async showTranscript() {
@@ -64,26 +60,24 @@ export class HostComponent implements OnInit {
     //   this.setupSpeechRecognition();  // Set up SpeechRecognition
     // }
     this.isRecognizing = !this.isRecognizing;
-    if(this.isRecognizing)
-      {
-    this.speechService.initializeRecognition(
-      'en-US',
-      (text) => {
-        this.ngZone.run(() => {
-          this.transcription = text;
-        });
-      },
-      (error) => {
-        console.error('Speech recognition error:', error);
-      }
-    );
-    this.isRecognizing = true;
-    this.speechService.startRecognition();
-      }
-      else
-      {
-        this.speechService.stopRecognition();
-      }
+    if (this.isRecognizing) {
+      this.speechService.initializeRecognition(
+        'en-US',
+        (text) => {
+          this.ngZone.run(() => {
+            this.transcription = text;
+          });
+        },
+        (error) => {
+          console.error('Speech recognition error:', error);
+        }
+      );
+      // this.isRecognizing = true;
+      this.speechService.startRecognition();
+    }
+    else {
+      this.speechService.stopRecognition();
+    }
   }
 
   setupSpeechRecognition() {
@@ -112,8 +106,6 @@ export class HostComponent implements OnInit {
           this.transcription = command;  // Set the transcription
         });
 
-        console.log(command);
-        console.log(event);
       };
 
       this.recognition.onerror = (event: any) => {
@@ -158,9 +150,9 @@ export class HostComponent implements OnInit {
 
   stopRecognition() {
     //if (this.recognition) {
-      //this.recognition.stop();
-      this.isRecognizing = false;
-      this.speechService.stopRecognition();
+    //this.recognition.stop();
+    this.isRecognizing = false;
+    this.speechService.stopRecognition();
     //}
   }
 }

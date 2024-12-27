@@ -25,7 +25,6 @@ export class SignalRService {
 
     public startConnection(userName: any, type: any, lang: any): void {
         if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-            console.log('SignalR connection already established');
             return;
         } else {
             this.hubConnection = new signalR.HubConnectionBuilder()
@@ -40,7 +39,6 @@ export class SignalRService {
             this.hubConnection
                 .start()
                 .then(() => {
-                    console.log('SignalR connected');
                     this.login(userName, type, lang);
                 }
                 )
@@ -63,24 +61,20 @@ export class SignalRService {
         // Listen for updated user list
         this.hubConnection?.on('UpdateUserList', (users: { userName: string, type: string, lang: string }[]) => {
             // this.loggedInUsers = users;
-            console.log("users Data", users)
             this.usersSubject.next(users);
         });
 
         // Listen for user login notifications
         this.hubConnection?.on('UserLoggedIn', (username: any) => {
-            console.log(`${username} logged in`);
         });
 
         // Listen for user logout notifications
         this.hubConnection?.on('UserLoggedOut', (username: string) => {
-            console.log(`${username} logged out`);
         });
     }
 
     public login(userName: any, type: any, lang: any): void {
         this.hubConnection?.invoke('Login', userName, type, lang).then((a) => {
-            console.log(a)
             if (type == "Receiver") {
                 sessionStorage.setItem("userName", userName);
                 sessionStorage.setItem("type", type);
