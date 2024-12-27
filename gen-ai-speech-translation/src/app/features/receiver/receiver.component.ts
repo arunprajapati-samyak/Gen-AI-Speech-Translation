@@ -19,8 +19,7 @@ export class ReceiverComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private signalRService: SignalRService) { }
   title: string = 'Audio Dashboard with Transcription';
-  transcription: string =
-    'This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.';
+  transcription: string = '';
   cards = [
     { name: 'John Doe', type: 'Speaker', imageState: 'mic' },
     { name: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
@@ -43,7 +42,8 @@ export class ReceiverComponent implements OnInit {
 
     this.signalRService.messages$.subscribe((messages) => {
       this.messages = messages;
-      console.log(this.messages);
+      if (this.messages.length > 0)
+        this.speakText(this.messages[0]);
     });
 
     // Subscribe to logged-in users
@@ -51,15 +51,16 @@ export class ReceiverComponent implements OnInit {
       this.loggedInUsers = users;
       console.log(this.loggedInUsers)
     });
-    // this.speakText();
   }
 
   // Method to convert text to speech
-  speakText(): void {
+  speakText(msg: any): void {
+    debugger
     if (isPlatformBrowser(this.platformId)) {
       if ('speechSynthesis' in window) {
         const synth = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(this.textToRead);
+        this.transcription = msg.message;
+        const utterance = new SpeechSynthesisUtterance(msg.message);
         utterance.lang = "en-US";
         synth.speak(utterance);
       }
