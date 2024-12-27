@@ -4,6 +4,7 @@ import { SignalRService } from '../../services/signa-r.service';
 import { AnyARecord } from 'dns';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { TranslateService } from '../../services/translate.service';
 
 interface Window {
   speechSynthesis: SpeechSynthesis;
@@ -25,7 +26,7 @@ export class ReceiverComponent implements OnInit, OnDestroy {
   username: string = '';
   message: string = '';
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
-    private signalRService: SignalRService, private router: Router) { }
+    private signalRService: SignalRService, private router: Router, private translateService: TranslateService) { }
   title: string = 'Audio Dashboard with Transcription';
   transcription: string = '';
   cards: { userName: string, type: string, lang: string, imageState: string }[] = [];
@@ -73,17 +74,20 @@ export class ReceiverComponent implements OnInit, OnDestroy {
 
   // }
 
-  synth = window.speechSynthesis;
+  synth = window?.speechSynthesis;
 
 
   // Method to convert text to speech
   speakText(msg: any): void {
     if (isPlatformBrowser(this.platformId)) {
       if ('speechSynthesis' in window) {
-        this.transcription = this.transcription + " " + msg.message;
-        const utterance = new SpeechSynthesisUtterance(msg.message);
-        utterance.lang = String(sessionStorage.getItem("lang"));
-        this.synth.speak(utterance);
+        this.translateService.translateText(String(msg.message), String(sessionStorage.getItem("lang"))).subscribe((response: any) => {
+          console.log("response translate : ", response[0].translations[0].text)
+          this.transcription = this.transcription + " " + response[0].translations[0].text;
+          const utterance = new SpeechSynthesisUtterance(response[0].translations[0].text);
+          utterance.lang = String(sessionStorage.getItem("lang"));
+          this.synth.speak(utterance);
+        });
       }
     }
     else {
@@ -177,7 +181,9 @@ export class ReceiverComponent implements OnInit, OnDestroy {
 
   logout() {
     sessionStorage.clear()
-    this.router.navigate([""])
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([""]);
+    });
   }
 
   ngOnDestroy(): void {

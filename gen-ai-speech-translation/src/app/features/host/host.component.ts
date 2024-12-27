@@ -3,6 +3,7 @@ import { Component, NgZone, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SignalRService } from '../../services/signa-r.service'
+import { SpeechService } from '../../services/speech.service';
 
 @Component({
   selector: 'app-host',
@@ -13,8 +14,7 @@ import { SignalRService } from '../../services/signa-r.service'
 })
 export class HostComponent implements OnInit {
   title: string = 'Audio Dashboard with Transcription';
-
-  constructor(private ngZone: NgZone, private signalRService: SignalRService) { }
+  constructor(private ngZone: NgZone, private signalRService: SignalRService, private speechService: SpeechService) { }
   ngOnInit(): void {
     //this.signalRService.startConnection();
     //this.signalRService.addMessageListener();
@@ -34,10 +34,15 @@ export class HostComponent implements OnInit {
       console.log("cards", this.cards)
     });
   }
-  transcription: string =
-    'This is the transcription of the conversation. It can span multiple lines based on the content.';
-  cards: { userName: string, type: string, lang: string, imageState: string }[] = [];
-  public transcriptions: string = '';
+  // transcription: string =
+  //   'This is the transcription of the conversation. It can span multiple lines based on the content.';
+  cards = [
+    { name: 'John Doe', type: 'Speaker' },
+    { name: 'Jane Smith', type: 'Receiver' },
+    { name: 'Alice Johnson', type: 'Speaker' },
+    { name: 'Bob Brown', type: 'Receiver' }
+  ];
+  public transcription: string = '';
   private recognition: any;
   public isRecognizing: boolean = false;
   public fulltranscription: string = '';
@@ -59,9 +64,22 @@ export class HostComponent implements OnInit {
   }
 
   async showTranscript() {
-    if (!this.isRecognizing) {
-      this.setupSpeechRecognition();  // Set up SpeechRecognition
-    }
+    // if (!this.isRecognizing) {
+    //   this.setupSpeechRecognition();  // Set up SpeechRecognition
+    // }
+    this.speechService.initializeRecognition(
+      'en-US',
+      (text) => {
+        this.ngZone.run(() => {
+          this.transcription = text;
+        });
+      },
+      (error) => {
+        console.error('Speech recognition error:', error);
+      }
+    );
+    this.isRecognizing = true;
+    this.speechService.startRecognition();
   }
 
   setupSpeechRecognition() {
@@ -125,6 +143,13 @@ export class HostComponent implements OnInit {
       this.recognition.start();
       this.isRecognizing = true;
     }
+  }
+
+  logout() {
+    sessionStorage.clear()
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([""]);
+    });
   }
 
   stopRecognition() {
