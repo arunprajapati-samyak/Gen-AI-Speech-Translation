@@ -1,49 +1,42 @@
 <div class="container">
-    <!-- Top Section: Title -->
-    <div class="top-section">
-      <h1>{{ title }}</h1>
+  <!-- Top Section: Title -->
+  <div class="top-section">
+    <h1>{{ title }}</h1>
+    <button (click)="logout()">Logout</button>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="main-content">
+    <!-- Left Section: Transcription -->
+    <div class="transcription-section">
+      <h2>Transcription</h2>
+      <p>{{ transcription }}</p>
     </div>
-  
-    <!-- Main Content Section -->
-    <div class="main-content">
-      <!-- Left Section: Transcription -->
-      <div class="transcription-section">
-        <h2>Transcription</h2>
-        <p>{{ transcription }}</p>
-      </div>
-  
-      <!-- Right Section: Cards -->
-      <div class="cards-section">
-        <div
-          class="card"
-          *ngFor="let card of cards"
-          (click)="displayCardDetails(card)"
-        >
-          <div class="card-info">
-            <h3>{{ card.name }}</h3>
-            <p>{{ card.type }}</p>
-            <button (click)="handleAudio(card.type); $event.stopPropagation()">
-                <img
-                *ngIf="card.type === 'Speaker'"
-                [src]="card.imageState === 'mic' ? 'assets/Images/open-mic.svg' : 'assets/Images/close-mic.svg'"
-                alt="Audio Control"
-                (click)="toggleImage(card)"
-              />
-              <!-- Optionally display a different icon for Receiver cards -->
-              <img *ngIf="card.type === 'Receiver'" src="assets/Images/sound-on.svg" alt="Receiver Icon" />
-              <!-- <img src="assets/Images/black-microphone-14637.png" /> -->
-            </button>
-          </div>
+
+    <!-- Right Section: Cards -->
+    <div class="cards-section">
+      <div class="card" *ngFor="let card of cards" (click)="displayCardDetails(card)">
+        <div class="card-info">
+          <h3>{{ card.name }}</h3>
+          <p>{{ card.type }}</p>
+          <button (click)="handleAudio(card.type); $event.stopPropagation()">
+            <img *ngIf="card.type === 'Speaker'"
+              [src]="card.imageState === 'mic' ? 'assets/Images/open-mic.svg' : 'assets/Images/close-mic.svg'"
+              alt="Audio Control" (click)="toggleImage(card)" />
+            <!-- Optionally display a different icon for Receiver cards -->
+            <img *ngIf="card.type === 'Receiver'" src="assets/Images/sound-on.svg" alt="Receiver Icon" />
+            <!-- <img src="assets/Images/black-microphone-14637.png" /> -->
+          </button>
         </div>
       </div>
     </div>
-  
-    <!-- Bottom Section: Card Details
+  </div>
+
+  <!-- Bottom Section: Card Details
     <div *ngIf="selectedCard" class="card-details">
       <h2>Selected Card Details</h2>
       <p><strong>Name:</strong> {{ selectedCard.name }}</p>
       <p><strong>Type:</strong> {{ selectedCard.type }}</p>
     </div> -->
-    <!-- <button (click)="OnClick()">Speak</button> -->
-  </div>
-  
+  <!-- <button (click)="OnClick()">Speak</button> -->
+</div>

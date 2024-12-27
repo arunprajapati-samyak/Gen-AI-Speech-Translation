@@ -14,7 +14,7 @@ import { SignalRService } from '../../services/signa-r.service';
 export class LoginComponent {
   loginForm!: FormGroup;
   showLanguageDropdown = false;
-  languages = ['English', 'Hindi', 'Gujarati'];
+  languages = [{ name: 'English', code: 'en-US' }, { name: 'Hindi', code: 'hi-IN' }, { name: 'Gujarati', code: 'gu-IN' }];
 
   constructor(
     public fb: FormBuilder,
@@ -24,7 +24,7 @@ export class LoginComponent {
     this.loginForm = this.fb.group({
       userName: ['', [Validators.required]],
       userType: ['', [Validators.required]],
-      lang: ['']
+      lang: ['en-US']
     })
   }
 

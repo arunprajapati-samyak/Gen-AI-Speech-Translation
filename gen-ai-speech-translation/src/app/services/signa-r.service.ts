@@ -13,11 +13,14 @@ export class SignalRService {
     // Subjects to track messages and logged-in users
     private messagesSubject = new BehaviorSubject<{ user: string; message: string }[]>([]);
     private usersSubject = new BehaviorSubject<any[]>([]);
+    private loginsSubject = new BehaviorSubject<any>('');
 
 
     // Observable streams for components to subscribe
     public messages$ = this.messagesSubject.asObservable();
     public users$ = this.usersSubject.asObservable();
+    public login$ = this.usersSubject.asObservable();
+
 
     constructor() { }
 
@@ -53,7 +56,6 @@ export class SignalRService {
         this.hubConnection?.on('ReceiveMessage', async (date: string, user: string, message: string) => {
             const currentMessages = await firstValueFrom(this.messages$);
             this.messagesSubject.next([...currentMessages, { user, message }]);
-            console.log([...currentMessages, { user, message }])
 
             // this.messages.push({ time, user, message });
             // console.log(this.messages);
@@ -67,7 +69,7 @@ export class SignalRService {
         });
 
         // Listen for user login notifications
-        this.hubConnection?.on('UserLoggedIn', (username: string) => {
+        this.hubConnection?.on('UserLoggedIn', (username: any) => {
             console.log(`${username} logged in`);
         });
 
@@ -78,7 +80,14 @@ export class SignalRService {
     }
 
     public login(userName: any, type: any, lang: any): void {
-        this.hubConnection?.invoke('Login', userName, type, lang).then((a) => console.log(a)
+        this.hubConnection?.invoke('Login', userName, type, lang).then((a) => {
+            console.log(a)
+            if (type == "Receiver") {
+                sessionStorage.setItem("userName", userName);
+                sessionStorage.setItem("type", type);
+                sessionStorage.setItem("lang", lang);
+            }
+        }
         ).catch((err) => console.error(err, 'login'));
     }
 

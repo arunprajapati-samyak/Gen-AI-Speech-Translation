@@ -1,7 +1,9 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { SignalRService } from '../../services/signa-r.service';
 import { AnyARecord } from 'dns';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 interface Window {
   speechSynthesis: SpeechSynthesis;
@@ -16,13 +18,14 @@ declare var window: any;
   templateUrl: './receiver.component.html',
   styleUrl: './receiver.component.scss'
 })
-export class ReceiverComponent implements OnInit {
+export class ReceiverComponent implements OnInit, OnDestroy {
+  private subscription!: Subscription;
   messages: { user: string; message: string }[] = [];
   loggedInUsers: string[] = [];
   username: string = '';
   message: string = '';
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
-    private signalRService: SignalRService) { }
+    private signalRService: SignalRService, private router: Router) { }
   title: string = 'Audio Dashboard with Transcription';
   transcription: string = '';
   cards = [
@@ -46,12 +49,12 @@ export class ReceiverComponent implements OnInit {
     // Call the speakText function when the component is initialized
     // Subscribe to messages
     //this.signalRService.startConnection();
-
-    this.signalRService.messages$.subscribe((messages) => {
-      this.messages = messages;
-      if (this.messages.length > 0)
-        this.speakText(this.messages[0]);
-    });
+    this.subscription =
+      this.signalRService.messages$.subscribe((messages) => {
+        this.messages = messages;
+        if (this.messages.length > 0)
+          this.speakText(this.messages[this.messages.length - 1]);
+      });
 
     // Subscribe to logged-in users
     this.signalRService.users$.subscribe((users) => {
@@ -68,19 +71,21 @@ export class ReceiverComponent implements OnInit {
 
   // }
 
+  synth = window.speechSynthesis;
+
+
   // Method to convert text to speech
   speakText(msg: any): void {
     if (isPlatformBrowser(this.platformId)) {
       if ('speechSynthesis' in window) {
-        const synth = window.speechSynthesis;
-        this.transcription = msg.message;
+        this.transcription = this.transcription + " " + msg.message;
         const utterance = new SpeechSynthesisUtterance(msg.message);
-        utterance.lang = "en-US";
-        synth.speak(utterance);
+        utterance.lang = String(sessionStorage.getItem("lang"));
+        this.synth.speak(utterance);
       }
-    } else {
+    }
+    else {
       console.error('Window object is not available in the current platform.');
-      const synth = window.speechSynthesis;
 
       const speakChunks = (text: string, voices: SpeechSynthesisVoice[]) => {
         const chunkSize = 150; // Character limit per chunk
@@ -95,7 +100,7 @@ export class ReceiverComponent implements OnInit {
         const speakNextChunk = () => {
           if (currentChunkIndex < chunks.length) {
             const utterance = new SpeechSynthesisUtterance(chunks[currentChunkIndex].trim());
-            utterance.lang = "hi-IN";
+            utterance.lang = String(sessionStorage.getItem("lang"));
             //utterance.voice = gujaratiVoice || fallbackVoice;
 
             // On chunk end, move to the next chunk immediately
@@ -109,34 +114,47 @@ export class ReceiverComponent implements OnInit {
               currentChunkIndex++;
               speakNextChunk(); // Skip to the next chunk on error
             };
-            synth.cancel();
-            synth.speak(utterance);
+            this.synth.cancel();
+            this.synth.speak(utterance);
           }
         };
 
-        speakNextChunk(); // Start speaking chunks
+        // speakNextChunk(); 
       };
 
       const initializeVoices = () => {
-        const voices = synth.getVoices();
+        const voices = this.synth.getVoices();
         if (voices.length > 0) {
           speakChunks(this.textToRead, voices);
         } else {
-          synth.onvoiceschanged = () => {
-            const updatedVoices = synth.getVoices();
+          this.synth.onvoiceschanged = () => {
+            const updatedVoices = this.synth.getVoices();
             speakChunks(this.textToRead, updatedVoices);
-            synth.onvoiceschanged = null; // Prevent multiple executions
+            this.synth.onvoiceschanged = null; // Prevent multiple executions
           };
         }
       };
 
-      if (synth.getVoices().length > 0) {
+      if (this.synth.getVoices().length > 0) {
         initializeVoices();
       } else {
         setTimeout(initializeVoices, 50);
       }
     }
   }
+
+  pauseSpeaking() {
+    if (this.synth.speaking && !this.synth.paused) {
+      this.synth.pause();
+    }
+  }
+
+  resumeSpeaking() {
+    if (this.synth.paused) {
+      this.synth.resume();
+    }
+  }
+
   handleAudio(type: string): void {
     if (type === 'Speaker') {
       console.log('Toggle microphone functionality.');
@@ -153,5 +171,16 @@ export class ReceiverComponent implements OnInit {
   displayCardDetails(card: any): void {
     this.selectedCard = card;
     console.log('Selected card:', card);
+  }
+
+  logout() {
+    sessionStorage.clear()
+    this.router.navigate([""])
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

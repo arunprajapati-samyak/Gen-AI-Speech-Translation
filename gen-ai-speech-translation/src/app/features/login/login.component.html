@@ -31,24 +31,29 @@
                                         <label class="form-label">User Type</label>
                                         <div>
                                             <label class="me-3">
-                                                <input type="radio" formControlName="userType" value="Host" (change)="onUserTypeChange('Host')"> Host
+                                                <input type="radio" formControlName="userType" value="Host"
+                                                    (change)="onUserTypeChange('Host')"> Host
                                             </label>
                                             <label>
-                                                <input type="radio" formControlName="userType" value="Receiver" (change)="onUserTypeChange('Receiver')"> Receiver
+                                                <input type="radio" formControlName="userType" value="Receiver"
+                                                    (change)="onUserTypeChange('Receiver')"> Receiver
                                             </label>
                                         </div>
-                                        <div *ngIf="loginForm.get('userType')?.invalid && loginForm.get('userType')?.touched" class="text-danger">
+                                        <div *ngIf="loginForm.get('userType')?.invalid && loginForm.get('userType')?.touched"
+                                            class="text-danger">
                                             <small>User type is required.</small>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="mb-4" *ngIf="showLanguageDropdown">
                                         <label class="form-label" for="languageSelect">Preferred Language</label>
                                         <select id="languageSelect" class="form-control" formControlName="lang">
                                             <option value="" disabled>Select Language</option>
-                                            <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+                                            <option *ngFor="let language of languages" [value]="language.code">{{
+                                                language.name }}</option>
                                         </select>
-                                        <div *ngIf="loginForm.get('lang')?.invalid && loginForm.get('lang')?.touched" class="text-danger">
+                                        <div *ngIf="loginForm.get('lang')?.invalid && loginForm.get('lang')?.touched"
+                                            class="text-danger">
                                             <small>Language is required for receiver.</small>
                                         </div>
                                     </div>
@@ -64,7 +69,7 @@
                                     </div>
 
                                     <!-- Create New Account -->
-                                
+
                                 </form>
 
 
