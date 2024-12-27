@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiintegrateService } from '../../services/apiintegrate.service';
+import { TranslateService } from '../../services/translate.service';
 
 @Component({
   selector: 'app-speech-summary',
@@ -9,40 +10,40 @@ import { ApiintegrateService } from '../../services/apiintegrate.service';
   templateUrl: './speech-summary.component.html',
   styleUrl: './speech-summary.component.scss'
 })
-export class SpeechSummaryComponent {
+export class SpeechSummaryComponent implements OnInit {
   summaryTitle: any = "Speech Summary"
-  summaryPoints: string[] = [
-    'Point 1: Overview of Angular features',
-    'Point 2: Data binding and component interaction',
-    'Point 3: Directives and pipes usage',
-    'Point 4: Services and dependency injection',
-    'Point 5: Routing and navigation',
-    'Point 1: Overview of Angular features',
-    'Point 2: Data binding and component interaction',
-    'Point 3: Directives and pipes usage',
-    'Point 4: Services and dependency injection',
-    'Point 5: Routing and navigation',
-    'Point 1: Overview of Angular features',
-    'Point 2: Data binding and component interaction',
-    'Point 3: Directives and pipes usage',
-    'Point 4: Services and dependency injection',
-    'Point 5: Routing and navigation',
-    'Point 1: Overview of Angular features',
-    'Point 2: Data binding and component interaction',
-    'Point 3: Directives and pipes usage',
-    'Point 4: Services and dependency injection',
-    'Point 5: Routing and navigation'
-  ];
-  
+  summaryPoints: string[] = [];
+  summerizeData: string = "Life is a precious gift. It is the sum of one's work, journey, dreams, joys, sorrows, successes, and battles for change. Life is more of a journey than a destination. It must be lived peacefully and happily. Seeking the meaning and purpose of life is the biggest search in the life of a man, and the questions about the meaning of human life are age-old. Life, however, still has some attractive elements, offering one a ray of hope and positivity, each passing day.We have individuals, families, relatives, and friends who make our lives unique, worth living, and make us feel that our lives are special. Our lives are challenging, but those challenges are what make it worth living.";
 
-  constructor(private apiintegration: ApiintegrateService) { }
+  constructor(private apiintegration: ApiintegrateService, private translateService: TranslateService) { }
+  ngOnInit(): void {
+    this.getSummaryDetails();
+  }
 
+  getSummaryDetails() {
+    this.apiintegration.getSummary(String(sessionStorage.getItem("SummaryData"))).subscribe({
+      next: (response) => {
+        let summary = response.summarized_text;
 
-  getSummaryDetails()
-  {
-    // this.apiintegration.translate('Hello', 'es').subscribe({
-    //   next: (response) => console.log(response),
-    //   error: (err) => console.error(err),
-    // });
+        if (summary.length > 0) {
+          let data = summary.join(', ')
+          if (data) {
+            this.getTranslatedData(data);
+          }
+        }
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  getTranslatedData(mesage: any) {
+    this.translateService.translateText(String(mesage), String(sessionStorage.getItem("lang") ?? 'hi')).subscribe((response: any) => {
+      console.log("response translate : ", response[0].translations[0].text)
+      //this.transcription = this.transcription + " " + response[0].translations[0].text;
+      //const utterance = new SpeechSynthesisUtterance(response[0].translations[0].text);
+      this.summaryPoints = response[0].translations[0].text.split(',');
+      //utterance.lang = String(sessionStorage.getItem("lang"));
+      //this.synth.speak(utterance);
+    });
   }
 }
