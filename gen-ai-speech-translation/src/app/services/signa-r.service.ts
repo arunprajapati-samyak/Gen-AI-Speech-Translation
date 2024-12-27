@@ -22,20 +22,26 @@ export class SignalRService {
     constructor() { }
 
     public startConnection(): void {
-        this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl('http://10.100.111.106:7096/signalRConnection', {
-                transport: signalR.HttpTransportType.WebSockets, // Force WebSockets for testing
-                skipNegotiation: true, // Required when forcing WebSockets
-            })
-            .configureLogging(signalR.LogLevel.Information) // Enable detailed logging
-            .build();
+        if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
+            console.log('SignalR connection already established');
+            return;
+        } else {
+            this.hubConnection = new signalR.HubConnectionBuilder()
+                .withUrl('http://10.100.111.106:7096/signalRConnection', {
+                    transport: signalR.HttpTransportType.WebSockets, // Force WebSockets for testing
+                    skipNegotiation: true, // Required when forcing WebSockets
+                })
+                .configureLogging(signalR.LogLevel.Information) // Enable detailed logging
+                .withAutomaticReconnect([500, 1000, 2500, 5000])
+                .build();
 
-        this.hubConnection
-            .start()
-            .then(() => console.log('SignalR connected'))
-            .catch((err: any) => console.error('SignalR connection error:', err));
+            this.hubConnection
+                .start()
+                .then(() => console.log('SignalR connected'))
+                .catch((err: any) => console.error('SignalR connection error:', err));
 
-        this.listenForServerEvents();
+            this.listenForServerEvents();
+        }
     }
 
     public listenForServerEvents(): void {
