@@ -18,7 +18,6 @@
           class="card"
           *ngFor="let card of cards"
           (click)="displayCardDetails(card)"
-          (click)="toggleImage(card)"
         >
           <div class="card-info">
             <h3>{{ card.name }}</h3>
@@ -28,6 +27,7 @@
                 *ngIf="card.type === 'Speaker'"
                 [src]="card.imageState === 'mic' ? 'assets/Images/open-mic.svg' : 'assets/Images/close-mic.svg'"
                 alt="Audio Control"
+                (click)="toggleImage(card)"
               />
               <!-- Optionally display a different icon for Receiver cards -->
               <img *ngIf="card.type === 'Receiver'" src="assets/Images/sound-on.svg" alt="Receiver Icon" />
@@ -44,5 +44,6 @@
       <p><strong>Name:</strong> {{ selectedCard.name }}</p>
       <p><strong>Type:</strong> {{ selectedCard.type }}</p>
     </div> -->
+    <!-- <button (click)="OnClick()">Speak</button> -->
   </div>
   
