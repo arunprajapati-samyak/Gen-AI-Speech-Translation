@@ -85,7 +85,7 @@ export class ReceiverComponent implements OnInit, OnDestroy {
           console.log("response translate : ", response[0].translations[0].text)
           const utterance = new SpeechSynthesisUtterance(response[0].translations[0].text);
           utterance.lang = String(sessionStorage.getItem("lang"));
-          this.transcription = this.transcription + " " + response[0].translations[0].text;
+          this.transcription = this.transcription.trim() + " " + response[0].translations[0].text.trim();
           this.synth.speak(utterance);
         });
       }
