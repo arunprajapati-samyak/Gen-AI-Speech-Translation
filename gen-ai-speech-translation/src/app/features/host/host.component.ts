@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SignalRService } from '../../services/signa-r.service'
 import { SpeechService } from '../../services/speech.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-host',
@@ -14,7 +15,7 @@ import { SpeechService } from '../../services/speech.service';
 })
 export class HostComponent implements OnInit {
   title: string = 'Audio Dashboard with Transcription';
-  constructor(private ngZone: NgZone, private signalRService: SignalRService, private speechService: SpeechService) { }
+  constructor(private ngZone: NgZone, private signalRService: SignalRService, private speechService: SpeechService, private router: Router) { }
   ngOnInit(): void {
     //this.signalRService.startConnection();
     //this.signalRService.addMessageListener();
