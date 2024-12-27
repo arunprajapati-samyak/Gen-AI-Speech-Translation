@@ -49,6 +49,7 @@ export class ReceiverComponent implements OnInit {
     // Subscribe to logged-in users
     this.signalRService.users$.subscribe((users) => {
       this.loggedInUsers = users;
+      console.log(this.loggedInUsers)
     });
     // this.speakText();
   }

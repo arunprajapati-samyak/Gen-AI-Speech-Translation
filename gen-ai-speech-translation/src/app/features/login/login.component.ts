@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SignalRService } from '../../services/signa-r.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent {
 
   constructor(
     public fb: FormBuilder,
-    private router : Router,
+    private router: Router,
+    private signalRService: SignalRService
   ) {
     this.loginForm = this.fb.group({
       userName: ['', [Validators.required]],
@@ -42,10 +44,10 @@ export class LoginComponent {
       const userType = this.loginForm.get('userType')?.value;
       const userName = this.loginForm.get('userName')?.value;
 
-      // if (userName) {
-      //   this.signalRService.login(this.userName);
-      //   this.loggedInUsers = this.signalRService.loggedInUsers;
-      // }
+      if (userName) {
+        this.signalRService.login(userName);
+        // this.loggedInUsers = this.signalRService.loggedInUsers;
+      }
       if (userType === 'Host') {
         this.router.navigate(['/host']);
       } else if (userType === 'Receiver') {
