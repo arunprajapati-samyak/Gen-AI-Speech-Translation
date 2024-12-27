@@ -21,7 +21,7 @@ export class SignalRService {
 
     constructor() { }
 
-    public startConnection(userName: any): void {
+    public startConnection(userName: any, type: any, lang: any): void {
         if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
             console.log('SignalR connection already established');
             return;
@@ -39,7 +39,7 @@ export class SignalRService {
                 .start()
                 .then(() => {
                     console.log('SignalR connected');
-                    this.login(userName);
+                    this.login(userName, type, lang);
                 }
                 )
                 .catch((err: any) => console.error('SignalR connection error:', err));
@@ -51,9 +51,9 @@ export class SignalRService {
     public listenForServerEvents(): void {
         // Listen for new messages
         this.hubConnection?.on('ReceiveMessage', async (date: string, user: string, message: string) => {
-            debugger
             const currentMessages = await firstValueFrom(this.messages$);
             this.messagesSubject.next([...currentMessages, { user, message }]);
+            console.log([...currentMessages, { user, message }])
 
             // this.messages.push({ time, user, message });
             // console.log(this.messages);
@@ -77,8 +77,8 @@ export class SignalRService {
         });
     }
 
-    public login(username: string): void {
-        this.hubConnection?.invoke('Login', username).then((a) => console.log(a)
+    public login(userName: any, type: any, lang: any): void {
+        this.hubConnection?.invoke('Login', userName, type, lang).then((a) => console.log(a)
         ).catch((err) => console.error(err, 'login'));
     }
 
