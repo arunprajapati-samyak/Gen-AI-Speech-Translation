@@ -29,7 +29,7 @@ export class SpeechService {
         this.recognition.onresult = (event: any) => {
             let interimTranscription = '';
             let finalTranscription = '';
-
+            console.log('event',event);
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const result = event.results[i];
                 if (result.isFinal) {
