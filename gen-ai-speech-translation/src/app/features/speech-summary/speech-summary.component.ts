@@ -21,17 +21,32 @@ export class SpeechSummaryComponent implements OnInit {
   }
 
   getSummaryDetails() {
-    if(sessionStorage)
-    {
-    console.log(String(sessionStorage.getItem("SummaryData")));
-    this.apiintegration.getSummary(String(sessionStorage.getItem("SummaryData"))).subscribe({
-      next: (response) => {
-        // console.log(response);
-        this.summaryPoints = response.summarized_text;
-      },
-      error: (err) => console.error(err),
-    });
+    if (sessionStorage) {
+      console.log(String(sessionStorage.getItem("SummaryData")));
+      this.apiintegration.getSummary(String(sessionStorage.getItem("SummaryData"))).subscribe({
+        next: (response) => {
+          // console.log(response);
+          this.summaryPoints = response.summarized_text;
+        },
+        error: (err) => console.error(err),
+      });
+    }
   }
+
+  downloadTextFile() {
+    const content = this.summaryPoints.toString();
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a temporary anchor element
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'example.txt'; // Name of the file
+    anchor.click();
+
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+    anchor.remove();
   }
 
   // getTranslatedData(mesage: any) {
