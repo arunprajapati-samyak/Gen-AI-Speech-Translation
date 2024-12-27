@@ -21,29 +21,27 @@ export class SpeechSummaryComponent implements OnInit {
   }
 
   getSummaryDetails() {
+    if(sessionStorage)
+    {
+    console.log(String(sessionStorage.getItem("SummaryData")));
     this.apiintegration.getSummary(String(sessionStorage.getItem("SummaryData"))).subscribe({
       next: (response) => {
-        let summary = response.summarized_text;
-
-        if (summary.length > 0) {
-          let data = summary.join(', ')
-          if (data) {
-            this.getTranslatedData(data);
-          }
-        }
+        // console.log(response);
+        this.summaryPoints = response.summarized_text;
       },
       error: (err) => console.error(err),
     });
   }
-
-  getTranslatedData(mesage: any) {
-    this.translateService.translateText(String(mesage), String(sessionStorage.getItem("lang") ?? 'hi')).subscribe((response: any) => {
-      console.log("response translate : ", response[0].translations[0].text)
-      //this.transcription = this.transcription + " " + response[0].translations[0].text;
-      //const utterance = new SpeechSynthesisUtterance(response[0].translations[0].text);
-      this.summaryPoints = response[0].translations[0].text.split(',');
-      //utterance.lang = String(sessionStorage.getItem("lang"));
-      //this.synth.speak(utterance);
-    });
   }
+
+  // getTranslatedData(mesage: any) {
+  //   this.translateService.translateText(String(mesage), String(sessionStorage.getItem("lang") ?? 'hi')).subscribe((response: any) => {
+  //     console.log("response translate : ", response[0].translations[0].text)
+  //     //this.transcription = this.transcription + " " + response[0].translations[0].text;
+  //     //const utterance = new SpeechSynthesisUtterance(response[0].translations[0].text);
+  //     this.summaryPoints = response[0].translations[0].text.split(',');
+  //     //utterance.lang = String(sessionStorage.getItem("lang"));
+  //     //this.synth.speak(utterance);
+  //   });
+  // }
 }
