@@ -27,7 +27,7 @@ export class SignalRService {
             return;
         } else {
             this.hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl('http://10.100.111.106:7096/signalRConnection', {
+                .withUrl('http://10.100.111.1:7096/signalRConnection', {
                     transport: signalR.HttpTransportType.WebSockets, // Force WebSockets for testing
                     skipNegotiation: true, // Required when forcing WebSockets
                 })
@@ -38,7 +38,10 @@ export class SignalRService {
             this.hubConnection
                 .start()
                 .then(() => console.log('SignalR connected'))
-                .catch((err: any) => console.error('SignalR connection error:', err));
+                .catch((err : any) => {
+                    console.error('Error while starting connection:', err);
+                    setTimeout(() => this.startConnection(), 2000); 
+                });
 
             this.listenForServerEvents();
         }
@@ -77,7 +80,7 @@ export class SignalRService {
     }
 
     public sendMessage(user: string, message: string): void {
-        debugger
+        
         this.hubConnection?.invoke('SendMessage', user, message).catch((err) => console.error(err));
     }
 }
