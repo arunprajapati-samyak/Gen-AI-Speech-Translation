@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { SignalRService } from '../../services/signa-r.service'
 
 @Component({
   selector: 'app-host',
@@ -10,9 +11,13 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
-export class HostComponent {
+export class HostComponent implements OnInit {
   title: string = 'Audio Dashboard with Transcription';
-  constructor(private ngZone: NgZone) { }
+  constructor(private ngZone: NgZone, private signalRService: SignalRService) { }
+  ngOnInit(): void {
+    this.signalRService.startConnection();
+    //this.signalRService.addMessageListener();
+  }
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content.';
   cards = [
@@ -66,6 +71,7 @@ export class HostComponent {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
             this.fulltranscription += event.results[i][0].transcript;
+            this.signalRService.sendMessage("Arun", event.results[i][0].transcript);
           }
         }
         this.ngZone.run(() => {

@@ -1,5 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { SignalRService } from '../../services/signa-r.service';
 
 declare var window: any;
 
@@ -10,8 +11,13 @@ declare var window: any;
   templateUrl: './receiver.component.html',
   styleUrl: './receiver.component.scss'
 })
-export class ReceiverComponent {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+export class ReceiverComponent implements OnInit {
+  messages: { user: string; message: string }[] = [];
+  loggedInUsers: string[] = [];
+  username: string = '';
+  message: string = '';
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,
+    private signalRService: SignalRService) { }
   title: string = 'Audio Dashboard with Transcription';
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content. This is the transcription of the conversation. It can span multiple lines based on the content.';
@@ -32,7 +38,19 @@ export class ReceiverComponent {
   ngOnInit(): void {
     // Check if the code is running in the browser environment
     // Call the speakText function when the component is initialized
-    this.speakText();
+    // Subscribe to messages
+    this.signalRService.startConnection();
+
+    this.signalRService.messages$.subscribe((messages) => {
+      this.messages = messages;
+      console.log(this.messages);
+    });
+
+    // Subscribe to logged-in users
+    this.signalRService.users$.subscribe((users) => {
+      this.loggedInUsers = users;
+    });
+    // this.speakText();
   }
 
   // Method to convert text to speech
