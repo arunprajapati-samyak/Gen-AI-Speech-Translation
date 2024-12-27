@@ -37,12 +37,7 @@ export class HostComponent implements OnInit {
   }
   // transcription: string =
   //   'This is the transcription of the conversation. It can span multiple lines based on the content.';
-  cards = [
-    { name: 'John Doe', type: 'Speaker' },
-    { name: 'Jane Smith', type: 'Receiver' },
-    { name: 'Alice Johnson', type: 'Speaker' },
-    { name: 'Bob Brown', type: 'Receiver' }
-  ];
+  cards: { userName: string, type: string, lang: string, imageState: string }[] = [];
   public transcription: string = '';
   private recognition: any;
   public isRecognizing: boolean = false;
@@ -68,6 +63,9 @@ export class HostComponent implements OnInit {
     // if (!this.isRecognizing) {
     //   this.setupSpeechRecognition();  // Set up SpeechRecognition
     // }
+    this.isRecognizing = !this.isRecognizing;
+    if(this.isRecognizing)
+      {
     this.speechService.initializeRecognition(
       'en-US',
       (text) => {
@@ -81,6 +79,11 @@ export class HostComponent implements OnInit {
     );
     this.isRecognizing = true;
     this.speechService.startRecognition();
+      }
+      else
+      {
+        this.speechService.stopRecognition();
+      }
   }
 
   setupSpeechRecognition() {
@@ -156,11 +159,10 @@ export class HostComponent implements OnInit {
   }
 
   stopRecognition() {
-    if (this.recognition) {
-      this.recognition.stop();
+    //if (this.recognition) {
+      //this.recognition.stop();
       this.isRecognizing = false;
-    }
+      this.speechService.stopRecognition();
+    //}
   }
-
-
 }
