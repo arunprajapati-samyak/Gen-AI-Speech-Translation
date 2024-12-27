@@ -77,7 +77,6 @@ export class SignalRService {
     }
 
     public sendMessage(user: string, message: string): void {
-        debugger
         this.hubConnection?.invoke('SendMessage', user, message).catch((err) => console.error(err));
     }
 }
