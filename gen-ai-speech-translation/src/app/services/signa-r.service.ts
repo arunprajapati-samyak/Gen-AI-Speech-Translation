@@ -62,7 +62,7 @@ export class SignalRService {
         // Listen for updated user list
         this.hubConnection?.on('UpdateUserList', (users: {userName : string, type: string, lang:string}[]) => {
             // this.loggedInUsers = users;
-            console.log(users)
+            console.log("users Data",users)
             this.usersSubject.next(users);
         });
 

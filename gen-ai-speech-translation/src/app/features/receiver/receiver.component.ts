@@ -1,7 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { SignalRService } from '../../services/signa-r.service';
-import { AnyARecord } from 'dns';
 
 interface Window {
   speechSynthesis: SpeechSynthesis;
@@ -25,16 +24,7 @@ export class ReceiverComponent implements OnInit {
     private signalRService: SignalRService) { }
   title: string = 'Audio Dashboard with Transcription';
   transcription: string = '';
-  cards = [
-    { userName: 'John Doe', type: 'Speaker', imageState: 'mic' },
-    { userName: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
-    { userName: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
-    { userName: 'Bob Brown', type: 'Receiver', imageState: 'mic' },
-    { userName: 'John Doe', type: 'Speaker', imageState: 'mic' },
-    { userName: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
-    { userName: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
-    { userName: 'Bob Brown', type: 'Receiver', imageState: 'mic' }
-  ];
+  cards : {userName : string, type: string, lang:string, imageState: string}[] = [];
   textToRead: string = 'मेरा भारत महान, विश्व का एक अद्वितीय देश है। यह भूमि संस्कृति, ऐतिहासिकता और विविधता से समृद्ध है। यहां अनेक धर्म, भाषाएं और जातियाँ एकत्रित होती हैं। मेरे देश में अद्वितीय स्वतंत्रता संग्राम की कहानी है। मेरा भारत महान, गर्व का स्रोत है और सबके लिए समर्पित है।';
 
   selectedCard: any = null; // Store details of the selected card
@@ -54,15 +44,20 @@ export class ReceiverComponent implements OnInit {
     });
 
     // Subscribe to logged-in users
-    this.signalRService.users$.subscribe((users) => {
-      users.map((res : any) => {
+    this.signalRService.users$.subscribe((users : any) => {
+      //debugger
+      users = users.map((res : any) => {
         return {
-          ...res,
+          userName : res[0],
+          type : res[1],
+          lang : res[2],
           imageState: 'mic' 
         }
       })
-      this.loggedInUsers = users;
-      console.log(this.loggedInUsers)
+      // this.loggedInUsers = users;
+      // console.log(this.loggedInUsers)
+      this.cards = users;
+      console.log("cards",this.cards)
     });
   }
 

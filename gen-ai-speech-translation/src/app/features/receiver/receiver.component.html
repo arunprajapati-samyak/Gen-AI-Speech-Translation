@@ -24,7 +24,7 @@
             <p>{{ card.type }}</p>
             <button (click)="handleAudio(card.type); $event.stopPropagation()">
                 <img
-                *ngIf="card.type === 'Speaker'"
+                *ngIf="card.type === 'Host'"
                 [src]="card.imageState === 'mic' ? 'assets/Images/open-mic.svg' : 'assets/Images/close-mic.svg'"
                 alt="Audio Control"
                 (click)="toggleImage(card)"
