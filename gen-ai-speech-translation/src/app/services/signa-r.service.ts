@@ -12,8 +12,7 @@ export class SignalRService {
 
     // Subjects to track messages and logged-in users
     private messagesSubject = new BehaviorSubject<{ user: string; message: string }[]>([]);
-    private usersSubject = new BehaviorSubject<any[]>([]);
-    private loginsSubject = new BehaviorSubject<any>('');
+    private usersSubject = new BehaviorSubject<{ userName: string, type: string, lang: string }[]>([]);
 
 
     // Observable streams for components to subscribe
@@ -62,9 +61,9 @@ export class SignalRService {
         });
 
         // Listen for updated user list
-        this.hubConnection?.on('UpdateUserList', (users: any) => {
+        this.hubConnection?.on('UpdateUserList', (users: { userName: string, type: string, lang: string }[]) => {
             // this.loggedInUsers = users;
-            console.log(users)
+            console.log("users Data", users)
             this.usersSubject.next(users);
         });
 

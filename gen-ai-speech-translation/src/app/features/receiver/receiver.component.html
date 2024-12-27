@@ -17,10 +17,10 @@
     <div class="cards-section">
       <div class="card" *ngFor="let card of cards" (click)="displayCardDetails(card)">
         <div class="card-info">
-          <h3>{{ card.name }}</h3>
+          <h3>{{ card.userName }}</h3>
           <p>{{ card.type }}</p>
           <button (click)="handleAudio(card.type); $event.stopPropagation()">
-            <img *ngIf="card.type === 'Speaker'"
+            <img *ngIf="card.type === 'Host'"
               [src]="card.imageState === 'mic' ? 'assets/Images/open-mic.svg' : 'assets/Images/close-mic.svg'"
               alt="Audio Control" (click)="toggleImage(card)" />
             <!-- Optionally display a different icon for Receiver cards -->

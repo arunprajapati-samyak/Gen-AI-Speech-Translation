@@ -21,23 +21,14 @@ declare var window: any;
 export class ReceiverComponent implements OnInit, OnDestroy {
   private subscription!: Subscription;
   messages: { user: string; message: string }[] = [];
-  loggedInUsers: string[] = [];
+  loggedInUsers: { userName: string, type: string, lang: string }[] = [];
   username: string = '';
   message: string = '';
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private signalRService: SignalRService, private router: Router) { }
   title: string = 'Audio Dashboard with Transcription';
   transcription: string = '';
-  cards = [
-    { name: 'John Doe', type: 'Speaker', imageState: 'mic' },
-    { name: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
-    { name: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
-    { name: 'Bob Brown', type: 'Receiver', imageState: 'mic' },
-    { name: 'John Doe', type: 'Speaker', imageState: 'mic' },
-    { name: 'Jane Smith', type: 'Receiver', imageState: 'mic' },
-    { name: 'Alice Johnson', type: 'Speaker', imageState: 'mic' },
-    { name: 'Bob Brown', type: 'Receiver', imageState: 'mic' }
-  ];
+  cards: { userName: string, type: string, lang: string, imageState: string }[] = [];
   textToRead: string = 'मेरा भारत महान, विश्व का एक अद्वितीय देश है। यह भूमि संस्कृति, ऐतिहासिकता और विविधता से समृद्ध है। यहां अनेक धर्म, भाषाएं और जातियाँ एकत्रित होती हैं। मेरे देश में अद्वितीय स्वतंत्रता संग्राम की कहानी है। मेरा भारत महान, गर्व का स्रोत है और सबके लिए समर्पित है।';
 
   selectedCard: any = null; // Store details of the selected card
@@ -57,9 +48,20 @@ export class ReceiverComponent implements OnInit, OnDestroy {
       });
 
     // Subscribe to logged-in users
-    this.signalRService.users$.subscribe((users) => {
-      this.loggedInUsers = users;
-      console.log(this.loggedInUsers)
+    this.signalRService.users$.subscribe((users: any) => {
+      //debugger
+      users = users.map((res: any) => {
+        return {
+          userName: res[0],
+          type: res[1],
+          lang: res[2],
+          imageState: 'mic'
+        }
+      })
+      // this.loggedInUsers = users;
+      // console.log(this.loggedInUsers)
+      this.cards = users;
+      console.log("cards", this.cards)
     });
   }
 

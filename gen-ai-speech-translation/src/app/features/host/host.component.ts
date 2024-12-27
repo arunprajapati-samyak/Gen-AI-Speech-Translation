@@ -13,19 +13,30 @@ import { SignalRService } from '../../services/signa-r.service'
 })
 export class HostComponent implements OnInit {
   title: string = 'Audio Dashboard with Transcription';
+
   constructor(private ngZone: NgZone, private signalRService: SignalRService) { }
   ngOnInit(): void {
     //this.signalRService.startConnection();
     //this.signalRService.addMessageListener();
+    this.signalRService.users$.subscribe((users: any) => {
+      //debugger
+      users = users.map((res: any) => {
+        return {
+          userName: res[0],
+          type: res[1],
+          lang: res[2],
+          imageState: 'mic'
+        }
+      })
+      // this.loggedInUsers = users;
+      // console.log(this.loggedInUsers)
+      this.cards = users;
+      console.log("cards", this.cards)
+    });
   }
   transcription: string =
     'This is the transcription of the conversation. It can span multiple lines based on the content.';
-  cards = [
-    { name: 'John Doe', type: 'Speaker' },
-    { name: 'Jane Smith', type: 'Receiver' },
-    { name: 'Alice Johnson', type: 'Speaker' },
-    { name: 'Bob Brown', type: 'Receiver' }
-  ];
+  cards: { userName: string, type: string, lang: string, imageState: string }[] = [];
   public transcriptions: string = '';
   private recognition: any;
   public isRecognizing: boolean = false;
@@ -62,7 +73,7 @@ export class HostComponent implements OnInit {
       this.recognition = new SpeechRecognition();
       this.recognition.lang = 'en-US';
       this.recognition.continuous = true;
-      this.recognition.interimResults = true;
+      this.recognition.interimResults = false;
 
       this.recognition.onresult = (event: any) => {
         var last = event.results.length - 1;
@@ -91,13 +102,13 @@ export class HostComponent implements OnInit {
 
   correctGrammar(text: string): string {
     let correctedText = text.charAt(0).toUpperCase() + text.slice(1); // Capitalize first letter
-  
+
     if (!/[.!?]$/.test(correctedText)) {
       correctedText += '.';
     }
-  
+
     correctedText = correctedText.replace(/([.!?])\s*/g, '$1 ');
-  
+
     return correctedText.trim();
   }
 
