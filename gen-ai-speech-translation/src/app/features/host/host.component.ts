@@ -70,8 +70,9 @@ export class HostComponent implements OnInit {
 
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
-            this.fulltranscription += event.results[i][0].transcript;
-            this.signalRService.sendMessage("Arun", event.results[i][0].transcript);
+            let correctedTranscript = this.correctGrammar(event.results[i][0].transcript);
+            this.fulltranscription += correctedTranscript + '. ';
+            this.signalRService.sendMessage("Arun", correctedTranscript);
           }
         }
         this.ngZone.run(() => {
@@ -86,6 +87,18 @@ export class HostComponent implements OnInit {
         console.error('Speech recognition error:', event.error);
       };
     }
+  }
+
+  correctGrammar(text: string): string {
+    let correctedText = text.charAt(0).toUpperCase() + text.slice(1); // Capitalize first letter
+  
+    if (!/[.!?]$/.test(correctedText)) {
+      correctedText += '.';
+    }
+  
+    correctedText = correctedText.replace(/([.!?])\s*/g, '$1 ');
+  
+    return correctedText.trim();
   }
 
   toggleRecognition() {
