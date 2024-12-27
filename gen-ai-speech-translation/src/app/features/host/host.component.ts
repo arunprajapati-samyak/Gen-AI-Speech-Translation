@@ -15,7 +15,7 @@ export class HostComponent implements OnInit {
   title: string = 'Audio Dashboard with Transcription';
   constructor(private ngZone: NgZone, private signalRService: SignalRService) { }
   ngOnInit(): void {
-    this.signalRService.startConnection();
+    //this.signalRService.startConnection();
     //this.signalRService.addMessageListener();
   }
   transcription: string =
